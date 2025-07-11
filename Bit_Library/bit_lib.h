@@ -9,6 +9,9 @@
 using namespace std::string_literals;
 
 namespace IMD {
+
+	constexpr size_t BITS_PER_BYTE{ 8 };
+
 	template<typename T>
 	void print_bytes(const T& value, const std::string& separator = " "s) {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
@@ -44,6 +47,17 @@ namespace IMD {
 
 		auto bytes = reinterpret_cast<std::byte*>(&value);
 		bytes[index] = new_byte;
+	}
+
+	template<typename T>
+	void modify_bit(T& value, size_t index, bool new_bit) {
+		if (index >= sizeof(T) * BITS_PER_BYTE)
+			throw std::runtime_error("Byte index is outside the size of the value");
+
+		if (new_bit)
+			value |= (T(1) << index);
+		else
+			value &= ~(T(1) << index);
 	}
 
 
