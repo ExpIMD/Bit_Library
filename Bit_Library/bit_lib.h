@@ -60,6 +60,13 @@ namespace IMD {
 			value &= ~(T(1) << index);
 	}
 
+	template<typename T>
+	bool compare_bytes(const T& first, const T& second) {
+		return std::memcmp(&a, &b, sizeof(T)) == 0;
+	}
+
+
+
 
 
 
