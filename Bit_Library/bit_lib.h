@@ -1,8 +1,9 @@
 #ifndef __BIT_LIB_
 #define __BIT_LIB_
 
-#include <iostream>
 #include <cstddef>
+#include <iostream>
+#include <stdexcept>
 #include <string>
 
 using namespace std::string_literals;
@@ -35,6 +36,19 @@ namespace IMD {
 		print_bits(value, separator);
 		std::cout << std::endl;
 	}
+
+	template<typename T>
+	void modify_byte(T& value, size_t index, std::byte new_byte) {
+		if (index >= sizeof(T))
+			throw std::runtime_error("Byte index is outside the size of the value");
+
+		auto bytes = reinterpret_cast<std::byte*>(&value);
+		bytes[index] = new_byte;
+	}
+
+
+
+
 
 }
 
