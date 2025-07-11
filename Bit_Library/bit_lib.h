@@ -62,8 +62,19 @@ namespace IMD {
 
 	template<typename T>
 	bool compare_bytes(const T& first, const T& second) {
-		return std::memcmp(&a, &b, sizeof(T)) == 0;
+		return std::memcmp(&first, &second, sizeof(T)) == 0;
 	}
+
+	template<typename T>
+	void swap_bytes(T& first, T& second) {
+		auto ptr1 = reinterpret_cast<std::byte*>(&first);
+		auto ptr2 = reinterpret_cast<std::byte*>(&second);
+
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
+			std::swap(ptr1[i], ptr2[i]);
+	}
+
+
 
 
 

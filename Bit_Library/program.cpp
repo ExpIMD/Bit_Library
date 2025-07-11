@@ -1,6 +1,18 @@
 #include "bit_lib.h"
 
+class item {
+public:
+	size_t field;
+	item(size_t value) : field(value) {}
+};
+
 int main() {
-	int value{ 256 };
-	IMD::println_bits(value);
+	item a{ 2 };
+	item b{ 9 };
+
+	IMD::swap_bytes(a, b);
+
+	std::cout << a.field;
+
+
 }
