@@ -1,6 +1,7 @@
 #ifndef __BIT_LIB_
 #define __BIT_LIB_
 
+#include <algorithm>
 #include <cstddef>
 #include <iostream>
 #include <stdexcept>
@@ -11,6 +12,7 @@ using namespace std::string_literals;
 namespace IMD {
 
 	constexpr size_t BITS_PER_BYTE{ 8 };
+
 
 	template<typename T>
 	void print_bytes(const T& value, const std::string& separator = " "s) {
@@ -74,14 +76,34 @@ namespace IMD {
 			std::swap(ptr1[i], ptr2[i]);
 	}
 
+	template<typename T>
+	std::string bits_to_string(const T& value, const std::string& separator = " "s) {
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		std::string result;
 
+		result.reserve(sizeof(T) * BITS_PER_BYTE);
 
+		for (size_t i{ 0 }; i < sizeof(T); ++i) {
+			for (size_t j{ 0 }; j < BITS_PER_BYTE; ++j)
+				result.append(std::to_string((static_cast<short>(ptr[i]) >> j) & 1));
+			result.append(separator);
+		}
+		return result;
+	}
 
+	template<typename T>
+	std::string bytes_to_string(const T& value, const std::string& separator = " "s) {
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		std::string result;
 
+		result.reserve(sizeof(T) * BITS_PER_BYTE);
 
-
-
-
+		for (size_t i{ 0 }; i < sizeof(T); ++i) {
+			result.append(std::to_string(static_cast<short>(ptr[i])));
+			result.append(separator);
+		}
+		return result;
+	}
 }
 
 

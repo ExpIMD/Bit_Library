@@ -7,12 +7,11 @@ public:
 };
 
 int main() {
-	item a{ 2 };
-	item b{ 9 };
+	int a{ 278 };
 
-	IMD::swap_bytes(a, b);
+	IMD::println_bytes(a);
 
-	std::cout << a.field;
+	std::cout << IMD::bytes_to_string(a, "+++");
 
 
 }
