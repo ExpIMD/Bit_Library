@@ -117,7 +117,7 @@ namespace IMD {
 
 	template<typename T>
 	bool compare_bytes(const T& first, const T& second) {
-		return std::memcmp(&first, &second, sizeof(T)) == 0;
+		return memcmp(&first, &second, sizeof(T)) == 0;
 	}
 
 	// Swaps the bytes of the given values: <first> and <second>
