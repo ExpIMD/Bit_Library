@@ -12,17 +12,10 @@ public:
 };
 
 int main() {
-	
-	std::list<std::byte> lst{ std::byte(123), std::byte(0), std::byte(0), std::byte(0) };
-	
-	auto i = IMD::restore_value<int>(lst.begin(), lst.end());
+	int a{9};
+	int b{-9};
 
-	IMD::println_bits(i);
-
-	IMD::println_bin_bytes(i);
-
-	std::cout << i;
-
-	return 0;
+	IMD::println_bin_bytes(a);
+	IMD::println_bin_bytes(b);
 
 }

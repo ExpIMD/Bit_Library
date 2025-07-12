@@ -60,8 +60,8 @@ namespace IMD {
 		for (size_t i{ 0 }; i < sizeof(T); ++i) {
 			unsigned char byte = static_cast<unsigned char>(ptr[i]);
 			std::cout << "0b";
-			for (size_t i {BITS_PER_BYTE}; i-- >= 0; )
-				std::cout << ((byte >> bit) & 1);
+			for (size_t j{BITS_PER_BYTE}; j-- > 0; )
+				std::cout << ((byte >> j) & 1);
 			std::cout << separator;
 		}
 	}
@@ -143,7 +143,7 @@ namespace IMD {
 
 	// Compares the bytes of two values <first> and <second>
 	template<typename T>
-	bool compare_bytes(const T& first, const T& second) {
+	int compare_bytes(const T& first, const T& second) {
 		return memcmp(&first, &second, sizeof(T));
 	}
 
@@ -210,10 +210,9 @@ namespace IMD {
 		C container{};
 		auto it = std::back_inserter(container);
 
-		for (size_t i{ 0 }; i < sizeof(T); ++i) {
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
 			for (size_t j{ 0 }; j < BITS_PER_BYTE; ++j)
 				*it = (static_cast<unsigned char>(ptr[i]) >> j) & 1;
-		}
 
 		return container;
 	}
