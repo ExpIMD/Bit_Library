@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <stdexcept>
@@ -33,6 +34,19 @@ namespace IMD {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
 		for (size_t i{ 0 }; i < sizeof(T); ++i)
 			std::cout << static_cast<short>(ptr[i]) << separator;
+	}
+
+	template<typename T>
+	void print_hex_bytes(const T& value, const std::string& separator = " "s) {
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
+			std::cout << "0x" << std::setw(2) << std::setfill('0') << std::hex << static_cast<short>(ptr[i]) << separator;
+	}
+
+	template<typename T>
+	void println_hex_bytes(const T& value, const std::string& separator = " "s) {
+		print_hex_bytes(value, separator);
+		std::cout << std::endl;
 	}
 
 	// Prints to console the byte sequence for a given <value> with a new line
@@ -216,10 +230,18 @@ namespace IMD {
 		return one_bit_count == 1;
 	}
 
+	template <typename T, typename InputIt>
+	T restore_value(InputIt first, InputIt last) {
+		if (std::distance(first, last) < sizeof(T))
+			throw std::runtime_error("Not enough bytes to restore value");
 
+		T value;
+		auto ptr = reinterpret_cast<std::byte*>(&value);
+		for (size_t i{ 0 }; i < sizeof(T); ++i, ++first)
+			ptr[i] = static_cast<std::byte>(*first);
 
-
-
+		return value;
+	}
 
 
 

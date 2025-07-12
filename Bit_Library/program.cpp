@@ -1,6 +1,8 @@
 #include "bit_lib.h"
 #include <vector>
 #include <typeinfo>
+#include <cstddef>
+#include <list>
 
 class item {
 public:
@@ -10,9 +12,11 @@ public:
 };
 
 int main() {
-	item a{};
-	IMD::println_bits(a);
-	std::cout << std::boolalpha << IMD::is_power_of_two(a);
+	std::list<std::byte> lst{ std::byte(123), std::byte(0), std::byte(0), std::byte(0) };
+	auto i = IMD::restore_value<int>(lst.begin(), lst.end());
 
+	IMD::println_hex_bytes(i);
+
+	std::cout << i;
 
 }
