@@ -135,6 +135,16 @@ namespace IMD {
 
 		return container;
 	}
+
+	template<typename T>
+	void invert_bits(T& value) {
+		auto ptr = reinterpret_cast<std::byte*>(&value);
+
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
+			ptr[i] = static_cast<std::byte>(~static_cast<unsigned char>(ptr[i]));
+	}
+
+
 }
 
 

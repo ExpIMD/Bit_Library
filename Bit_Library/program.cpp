@@ -8,17 +8,13 @@ public:
 };
 
 int main() {
-	int a{ 279 };
+	item a{ 12 };
 
-	auto temp = IMD::bytes_to_container<>(a);
+	IMD::println_bits(a);
 
-	for (const auto& x : temp)
-		std::cout << x << " ";
+	IMD::invert_bits(a);
 
-	std::cout << std::endl;
-	
-
-	std::cout << IMD::bytes_to_string(a, " ");
+	IMD::println_bits(a);
 
 
 }
