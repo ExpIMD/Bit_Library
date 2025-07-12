@@ -12,10 +12,12 @@ public:
 };
 
 int main() {
+	
 	std::list<std::byte> lst{ std::byte(123), std::byte(0), std::byte(0), std::byte(0) };
+	
 	auto i = IMD::restore_value<int>(lst.begin(), lst.end());
 
-	IMD::println_hex_bytes(i);
+	IMD::print_oct_bytes(i);
 
 	std::cout << i;
 

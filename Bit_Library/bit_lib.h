@@ -44,8 +44,21 @@ namespace IMD {
 	}
 
 	template<typename T>
+	void print_oct_bytes(const T& value, const std::string& separator = " "s) {
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
+			std::cout << "0" << std::setw(3) << std::setfill('0') << std::oct << static_cast<short>(ptr[i]) << separator;
+	}
+
+	template<typename T>
 	void println_hex_bytes(const T& value, const std::string& separator = " "s) {
 		print_hex_bytes(value, separator);
+		std::cout << std::endl;
+	}
+
+	template<typename T>
+	void println_oct_bytes(const T& value, const std::string& separator = " "s) {
+		print_oct_bytes(value, separator);
 		std::cout << std::endl;
 	}
 
@@ -165,8 +178,8 @@ namespace IMD {
 	template<typename T, typename C = std::vector<unsigned char>>
 	C bytes_to_container(const T& value) {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
-		C container{};
 
+		C container{};
 		auto it = std::back_inserter(container);
 
 		for (size_t i{ 0 }; i < sizeof(T); ++i)
@@ -224,9 +237,12 @@ namespace IMD {
 			while (byte) {
 				one_bit_count += (byte & 1);
 				byte >>= 1;
-				if (one_bit_count > 1)	return false;
+
+				if (one_bit_count > 1)
+					return false;
 			}
 		}
+
 		return one_bit_count == 1;
 	}
 
@@ -242,6 +258,8 @@ namespace IMD {
 
 		return value;
 	}
+
+
 
 
 
