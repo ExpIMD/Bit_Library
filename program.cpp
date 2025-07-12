@@ -2,20 +2,15 @@
 #include <vector>
 #include <typeinfo>
 #include <cstddef>
-#include <list>
-
-class item {
-public:
-	unsigned char data;
-
-	item() : data(0x04) {}
-};
 
 int main() {
-	int a{9};
-	int b{-9};
+	int a{314};
+	
+	IMD::println_dec_bytes(a);
 
-	IMD::println_bin_bytes(a);
-	IMD::println_bin_bytes(b);
+	auto c = IMD::bytes_to_container(a);
+
+	for(auto x : c)
+		std::cout << std::hex << x << " ";
 
 }

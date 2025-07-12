@@ -34,7 +34,7 @@ namespace IMD {
 	void print_hex_bytes(const T& value, const std::string& separator = " "s) {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
 		for (size_t i{ 0 }; i < sizeof(T); ++i)
-			std::cout << "0x" << std::setw(2) << std::setfill('0') << std::hex << static_cast<short>(ptr[i]) << separator;
+			std::cout << "0x" << std::setw(2) << std::setfill('0') << std::hex << static_cast<short>(static_cast<unsigned char>(ptr[i])) << separator;
 	}
 
 	// Prints the bytes of <value> in decimal format without a trailing newline
@@ -42,7 +42,7 @@ namespace IMD {
 	void print_dec_bytes(const T& value, const std::string& separator = " "s) {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
 		for (size_t i{ 0 }; i < sizeof(T); ++i)
-			std::cout << static_cast<short>(ptr[i]) << separator;
+			std::cout << static_cast<short>(static_cast<unsigned char>(ptr[i])) << separator;
 	}
 
 	// Prints the bytes of <value> in octal format without a trailing newline
@@ -50,7 +50,7 @@ namespace IMD {
 	void print_oct_bytes(const T& value, const std::string& separator = " "s) {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
 		for (size_t i{ 0 }; i < sizeof(T); ++i)
-			std::cout << "0" << std::setw(3) << std::setfill('0') << std::oct << static_cast<short>(ptr[i]) << separator;
+			std::cout << "0" << std::setw(3) << std::setfill('0') << std::oct << static_cast<short>(static_cast<unsigned char>(ptr[i])) << separator;
 	}
 
 	// Prints the bytes of <value> in binary format without a trailing newline
@@ -72,7 +72,7 @@ namespace IMD {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
 		for (size_t i{ 0 }; i < sizeof(T); ++i) {
 			for (size_t j{ BITS_PER_BYTE }; j-- > 0; )
-				std::cout << (((static_cast<int>(ptr[i]) >> j) & 1));
+				std::cout << (((static_cast<unsigned char>(ptr[i]) >> j) & 1));
 			std::cout << separator;
 		}
 	}
@@ -189,7 +189,7 @@ namespace IMD {
 	}
 
 	// Converts the bytes of <value> into a container
-	template<typename T, typename C = std::vector<unsigned char>>
+	template<typename T, typename C = std::vector<short>>
 	C bytes_to_container(const T& value) {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
 
@@ -197,7 +197,7 @@ namespace IMD {
 		auto it = std::back_inserter(container);
 
 		for (size_t i{ 0 }; i < sizeof(T); ++i)
-			*it = static_cast<unsigned char>(ptr[i]);
+			*it = static_cast<typename C::value_type>(static_cast<unsigned char>(ptr[i]));
 
 		return container;
 	}
@@ -291,6 +291,15 @@ namespace IMD {
 			ptr[i] = static_cast<std::byte>(*first);
 
 		return value;
+	}
+
+	// Reverses the byte order of a value of type <T> in place
+	template<typename T>
+	void byte_swap(T& value) {
+		auto ptr = reinterpret_cast<std::byte*>(&value);
+
+		for (size_t i {0}; i < sizeof(T) / 2; ++i)
+			std::swap(ptr[i], ptr[sizeof(T) - 1 - i]);
 	}
 }
 
