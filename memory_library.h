@@ -1,5 +1,5 @@
-#ifndef __BIT_LIB_
-#define __BIT_LIB_
+#ifndef __MEMORY_LIBRARY_
+#define __MEMORY_LIBRARY_
 
 /*
 This library provides utilities for inspecting and manipulating the raw byte and bit representation of arbitrary objects in memory.
@@ -12,8 +12,7 @@ Unlike unsigned char, which is an integral type and can be used in arithmetic, s
 
 (2). Bit numbering
 
-This library treats the object memory as a contiguous array of bytes in little-endian order.
-Bits within each byte are numbered from right to left (from the least significant bit at position 0 on the right, to the most significant bit at position 7 on the left).
+This library treats the object memory as a contiguous array of bytes in little-endian order. Bits within each byte are numbered from right to left (from the least significant bit at position 0 on the right, to the most significant bit at position 7 on the left).
 */
 
 #include <algorithm>
@@ -385,4 +384,4 @@ namespace IMD {
     }
 }
 
-#endif // !__BIT_LIB_
+#endif // !__MEMORY_LIBRARY_
