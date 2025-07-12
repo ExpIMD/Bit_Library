@@ -316,6 +316,7 @@ namespace IMD {
 			std::swap(ptr[i], ptr[sizeof(T) - 1 - i]);
 	}
 
+	// Shifts the bits of <value> to the left by <shift> positions
 	template<typename T>
     void shift_left_bits(T& value, size_t shift) {
         if (shift == 0) return;
@@ -351,6 +352,7 @@ namespace IMD {
         }
     }
 
+	// Shifts the bits of <value> to the right by <shift> positions
 	template<typename T>
     void shift_right_bits(T& value, size_t shift) {
         if (shift == 0) return;
@@ -383,15 +385,58 @@ namespace IMD {
         }
     }
 
+	// Returns true if all bits in <value> are set to 1
 	template<typename T>
 	bool all_bits_one(const T& value){
-		return one_bit_count(value) == bit_count<T>();
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
+			for (size_t j{ BITS_PER_BYTE }; j-- > 0; )
+				if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 0)
+					return false;
+
+		return true;
 	}
 
+	// Returns true if all bits in <value> are set to 0
 	template<typename T>
 	bool all_bits_zero(const T& value){
-		return zero_bit_count(value) == bit_count<T>();
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
+			for (size_t j{ BITS_PER_BYTE }; j-- > 0; )
+				if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 1)
+					return false;
+
+		return true;
 	}
+
+	// Returns true if any bit in <value> is set to 1
+	template<typename T>
+	bool any_bits_one(const T& value){
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
+			for (size_t j{ BITS_PER_BYTE }; j-- > 0; )
+				if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 1)
+					return true;
+
+		return false;
+	}
+
+	// Returns true if any bit in <value> is set to 0
+	template<typename T>
+	bool any_bits_zero(const T& value){
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
+			for (size_t j{ BITS_PER_BYTE }; j-- > 0; )
+				if (((static_cast<unsigned char>(ptr[i]) >> j) & 1) == 0)
+					return true;
+
+		return false;
+	}
+
 }
 
 #endif // !__MEMORY_LIBRARY_

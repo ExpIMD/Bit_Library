@@ -4,10 +4,10 @@
 #include <cstddef>
 
 int main() {
-	short a{-1};
+	short a{1};
 
 	IMD::println_bits(a);
 
-	std::cout <<  std::boolalpha << IMD::all_bits_one(a);
+	std::cout <<  std::boolalpha << IMD::any_bits_one(a);
 
 }
