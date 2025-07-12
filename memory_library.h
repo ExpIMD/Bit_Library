@@ -382,6 +382,16 @@ namespace IMD {
             }
         }
     }
+
+	template<typename T>
+	bool all_bits_one(const T& value){
+		return one_bit_count(value) == bit_count<T>();
+	}
+
+	template<typename T>
+	bool all_bits_zero(const T& value){
+		return zero_bit_count(value) == bit_count<T>();
+	}
 }
 
 #endif // !__MEMORY_LIBRARY_

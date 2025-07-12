@@ -1,15 +1,13 @@
-#include "bit_lib.h"
+#include "memory_library.h"
 #include <vector>
 #include <typeinfo>
 #include <cstddef>
 
 int main() {
-	int a{314};
-	
-	std::cout << (a >> 3);
+	short a{-1};
 
-	IMD::shift_right_bits(a, 3);
+	IMD::println_bits(a);
 
-	std::cout << a;
+	std::cout <<  std::boolalpha << IMD::all_bits_one(a);
 
 }
