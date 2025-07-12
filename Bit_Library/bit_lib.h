@@ -20,7 +20,7 @@ namespace IMD {
 	void print_bytes(const T& value, const std::string& separator = " "s) {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
 		for (size_t i{ 0 }; i < sizeof(T); ++i)
-			std::cout << static_cast<short>(ptr[i]) << separator;
+			std::cout << static_cast<unsigned char>(ptr[i]) << separator;
 	}
 	template<typename T>
 	void println_bytes(const T& value, const std::string& separator = " "s) {
@@ -32,8 +32,8 @@ namespace IMD {
 	void print_bits(const T& value, const std::string& separator = " "s) {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
 		for (size_t i{ 0 }; i < sizeof(T); ++i) {
-			for (short j{ 7 }; j >= 0; --j)
-				std::cout << (((static_cast<short>(ptr[i]) >> j) & 1));
+			for (size_t j{ BITS_PER_BYTE }; j-- > 0; )
+				std::cout << (((static_cast<unsigned char>(ptr[i]) >> j) & 1));
 			std::cout << separator;
 		}
 	}
@@ -87,7 +87,7 @@ namespace IMD {
 
 		for (size_t i{ 0 }; i < sizeof(T); ++i) {
 			for (size_t j{ 0 }; j < BITS_PER_BYTE; ++j)
-				result.append(std::to_string((static_cast<short>(ptr[i]) >> j) & 1));
+				result.append(std::to_string((static_cast<unsigned char>(ptr[i]) >> j) & 1));
 			result.append(separator);
 		}
 		return result;
@@ -101,7 +101,7 @@ namespace IMD {
 		result.reserve(sizeof(T) * BITS_PER_BYTE);
 
 		for (size_t i{ 0 }; i < sizeof(T); ++i) {
-			result.append(std::to_string(static_cast<short>(ptr[i])));
+			result.append(std::to_string(static_cast<unsigned char>(ptr[i])));
 			result.append(separator);
 		}
 		return result;
@@ -116,22 +116,21 @@ namespace IMD {
 
 		for (size_t i{ 0 }; i < sizeof(T); ++i) {
 			for (size_t j{ 0 }; j < BITS_PER_BYTE; ++j)
-				*it = (static_cast<short>(ptr[i]) >> j) & 1;
+				*it = (static_cast<unsigned char>(ptr[i]) >> j) & 1;
 		}
 
 		return container;
 	}
 
-	template<typename T, typename C = std::vector<short>>
+	template<typename T, typename C = std::vector<unsigned char>>
 	C bytes_to_container(const T& value) {
 		auto ptr = reinterpret_cast<const std::byte*>(&value);
-
 		C container{};
+
 		auto it = std::back_inserter(container);
 
-		for (size_t i{ 0 }; i < sizeof(T); ++i) {
-			*it = static_cast<short>(ptr[i]);
-		}
+		for (size_t i{ 0 }; i < sizeof(T); ++i)
+			*it = static_cast<unsigned char>(ptr[i]);
 
 		return container;
 	}
@@ -143,6 +142,38 @@ namespace IMD {
 		for (size_t i{ 0 }; i < sizeof(T); ++i)
 			ptr[i] = static_cast<std::byte>(~static_cast<unsigned char>(ptr[i]));
 	}
+
+	template<typename T>
+	size_t one_bit_count(const T& value) {
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		size_t count{ 0 };
+
+		for (size_t i{ 0 }; i < sizeof(T); ++i) {
+			auto byte = static_cast<unsigned char>(ptr[i]);
+			while (byte) {
+				count += byte & 1;
+				byte >>= 1;
+			}
+		}
+
+		return count;
+	}
+
+	template<typename T>
+	size_t zero_bit_count(const T& value) {
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		size_t count{ 0 };
+
+		for (size_t i{ 0 }; i < sizeof(T); ++i) {
+			auto byte = static_cast<unsigned char>(ptr[i]);
+			for (unsigned char j{ 0 }; j < BITS_PER_BYTE; ++j)
+				if ((byte & (1 << j)) == 0)
+					++count;
+		}
+
+		return count;
+	}
+
 
 
 }

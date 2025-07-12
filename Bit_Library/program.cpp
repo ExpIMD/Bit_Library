@@ -1,20 +1,18 @@
 #include "bit_lib.h"
 #include <vector>
+#include <typeinfo>
 
 class item {
 public:
-	size_t field;
-	item(size_t value) : field(value) {}
+	item() {}
 };
 
 int main() {
-	item a{ 12 };
+	item a{  };
 
-	IMD::println_bits(a);
+	size_t s;
 
-	IMD::invert_bits(a);
-
-	IMD::println_bits(a);
+	IMD::print_bits(a);
 
 
 }
