@@ -4,8 +4,10 @@
 #include <algorithm>
 #include <cstddef>
 #include <iostream>
+#include <iterator>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 using namespace std::string_literals;
 
@@ -103,6 +105,35 @@ namespace IMD {
 			result.append(separator);
 		}
 		return result;
+	}
+
+	template<typename T, typename C = std::vector<bool>>
+	C bits_to_container(const T& value) {
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+
+		C container{};
+		auto it = std::back_inserter(container);
+
+		for (size_t i{ 0 }; i < sizeof(T); ++i) {
+			for (size_t j{ 0 }; j < BITS_PER_BYTE; ++j)
+				*it = (static_cast<short>(ptr[i]) >> j) & 1;
+		}
+
+		return container;
+	}
+
+	template<typename T, typename C = std::vector<short>>
+	C bytes_to_container(const T& value) {
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+
+		C container{};
+		auto it = std::back_inserter(container);
+
+		for (size_t i{ 0 }; i < sizeof(T); ++i) {
+			*it = static_cast<short>(ptr[i]);
+		}
+
+		return container;
 	}
 }
 

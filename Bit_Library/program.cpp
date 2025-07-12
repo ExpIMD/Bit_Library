@@ -1,4 +1,5 @@
 #include "bit_lib.h"
+#include <vector>
 
 class item {
 public:
@@ -7,11 +8,17 @@ public:
 };
 
 int main() {
-	int a{ 278 };
+	int a{ 279 };
 
-	IMD::println_bytes(a);
+	auto temp = IMD::bytes_to_container<>(a);
 
-	std::cout << IMD::bytes_to_string(a, "+++");
+	for (const auto& x : temp)
+		std::cout << x << " ";
+
+	std::cout << std::endl;
+	
+
+	std::cout << IMD::bytes_to_string(a, " ");
 
 
 }
