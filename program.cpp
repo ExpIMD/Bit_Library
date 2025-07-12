@@ -17,7 +17,9 @@ int main() {
 	
 	auto i = IMD::restore_value<int>(lst.begin(), lst.end());
 
-	IMD::print_oct_bytes(i);
+	IMD::println_bits(i);
+
+	IMD::println_bin_bytes(i);
 
 	std::cout << i;
 
