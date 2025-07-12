@@ -4,16 +4,15 @@
 
 class item {
 public:
-	item() {}
+	unsigned char data;
+
+	item() : data(0x04) {}
 };
 
 int main() {
-	short a{ 254 };
+	item a{};
 	IMD::println_bits(a);
-
-	IMD::modify_bit(a, 12, 1);
-
-	IMD::println_bits(a);
+	std::cout << std::boolalpha << IMD::is_power_of_two(a);
 
 
 }

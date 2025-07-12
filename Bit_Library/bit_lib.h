@@ -202,7 +202,18 @@ namespace IMD {
 
 	template<typename T>
 	bool is_power_of_two(const T& value) {
-		// TODO: реализация
+		auto ptr = reinterpret_cast<const std::byte*>(&value);
+		size_t one_bit_count{ 0 };
+
+		for (size_t i{ 0 }; i < sizeof(T); ++i) {
+			auto byte = static_cast<unsigned char>(ptr[i]);
+			while (byte) {
+				one_bit_count += (byte & 1);
+				byte >>= 1;
+				if (one_bit_count > 1)	return false;
+			}
+		}
+		return one_bit_count == 1;
 	}
 
 
