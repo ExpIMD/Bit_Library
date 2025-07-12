@@ -6,11 +6,10 @@
 int main() {
 	int a{314};
 	
-	IMD::println_dec_bytes(a);
+	std::cout << (a >> 3);
 
-	auto c = IMD::bytes_to_container(a);
+	IMD::shift_right_bits(a, 3);
 
-	for(auto x : c)
-		std::cout << std::hex << x << " ";
+	std::cout << a;
 
 }

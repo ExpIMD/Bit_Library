@@ -1,6 +1,21 @@
 #ifndef __BIT_LIB_
 #define __BIT_LIB_
 
+/*
+This library provides utilities for inspecting and manipulating the raw byte and bit representation of arbitrary objects in memory.
+The library does not interpret padding bits or bitfields; it operates on the raw bytes.
+
+(1). Why std::byte instead of unsigned char?
+
+std::byte, introduced in C++17, is a distinct type designed specifically to represent raw memory without implying any numeric meaning or arithmetic operations.
+Unlike unsigned char, which is an integral type and can be used in arithmetic, std::byte clearly signals intent: we are working with raw memory bytes, not numeric values.
+
+(2). Bit numbering
+
+This library treats the object memory as a contiguous array of bytes in little-endian order.
+Bits within each byte are numbered from right to left (from the least significant bit at position 0 on the right, to the most significant bit at position 7 on the left).
+*/
+
 #include <algorithm>
 #include <cstddef>
 #include <iomanip>
@@ -301,8 +316,73 @@ namespace IMD {
 		for (size_t i {0}; i < sizeof(T) / 2; ++i)
 			std::swap(ptr[i], ptr[sizeof(T) - 1 - i]);
 	}
+
+	template<typename T>
+    void shift_left_bits(T& value, size_t shift) {
+        if (shift == 0) return;
+
+        if (shift >= sizeof(T) * BITS_PER_BYTE) {     // If shift amount is greater or equal to total bits in T, zero the whole object
+            auto ptr = reinterpret_cast<std::byte*>(&value);
+
+            std::fill(ptr, ptr + sizeof(T), std::byte{0});
+
+            return;
+        }
+
+        auto ptr = reinterpret_cast<std::byte*>(&value);
+        size_t byte_shift {shift / BITS_PER_BYTE};
+        size_t bit_shift {shift % BITS_PER_BYTE};
+
+        if (byte_shift > 0) { // Shift bytes to the left by byte_shift positions
+            for (size_t i {0}; i < sizeof(T) - byte_shift; ++i) // Move bytes towards the beginning of the array
+                ptr[i] = ptr[i + byte_shift];
+            
+			for (size_t i {sizeof(T) - byte_shift}; i < sizeof(T); ++i) // Zero-fill the trailing bytes
+                ptr[i] = std::byte{0};
+        }
+
+        if (bit_shift > 0) { // Shift bits inside bytes with carry from the next byte
+            for (size_t i {0}; i < sizeof(T); ++i) { // Iterate bytes from the end to the beginning
+                size_t index = sizeof(T) - 1 - i;
+                unsigned char current = static_cast<unsigned char>(ptr[index]);
+                unsigned char next = (index > 0) ? static_cast<unsigned char>(ptr[index - 1]) : 0;
+
+                ptr[index] = static_cast<std::byte>((current << bit_shift) | (next >> (BITS_PER_BYTE - bit_shift)));
+            }
+        }
+    }
+
+	template<typename T>
+    void shift_right_bits(T& value, size_t shift) {
+        if (shift == 0) return;
+
+        if (shift >= sizeof(T) * BITS_PER_BYTE) { // If shift amount is greater or equal to total bits in T, zero the whole object
+            auto ptr = reinterpret_cast<std::byte*>(&value);
+            std::fill(ptr, ptr + sizeof(T), std::byte{0});
+            return;
+        }
+
+        auto ptr = reinterpret_cast<std::byte*>(&value);
+        size_t byte_shift {shift / BITS_PER_BYTE};
+        size_t bit_shift {shift % BITS_PER_BYTE};
+
+        if (byte_shift > 0) { // Shift bytes to the right by byte_shift positions
+            for (size_t i {sizeof(T)}; i-- > byte_shift; ) // // Move bytes towards the end of the array
+                ptr[i] = ptr[i - byte_shift];
+
+            for (size_t i = 0; i < byte_shift; ++i) // Zero-fill the leading bytes
+                ptr[i] = std::byte{0};
+        }
+
+        if (bit_shift > 0) { // Shift bits inside bytes with carry from the previous byte
+            for (size_t i {0}; i < sizeof(T); ++i) { // Iterate bytes from the beginning to the end
+                unsigned char current = static_cast<unsigned char>(ptr[i]);
+                unsigned char previous = (i + 1 < sizeof(T)) ? static_cast<unsigned char>(ptr[i + 1]) : 0;
+
+                ptr[i] = static_cast<std::byte>((current >> bit_shift) | (previous << (BITS_PER_BYTE - bit_shift)));
+            }
+        }
+    }
 }
-
-
 
 #endif // !__BIT_LIB_
