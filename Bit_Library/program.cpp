@@ -8,11 +8,12 @@ public:
 };
 
 int main() {
-	item a{  };
+	short a{ 254 };
+	IMD::println_bits(a);
 
-	size_t s;
+	IMD::modify_bit(a, 12, 1);
 
-	IMD::print_bits(a);
+	IMD::println_bits(a);
 
 
 }
